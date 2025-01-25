@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Priority To-Do List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #333333;
+    }
+
+    .input-container {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #cccccc;
+      border-radius: 4px;
+    }
+
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      margin-left: 5px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      margin-bottom: 10px;
+      background-color: #f9f9f9;
+      border: 1px solid #eeeeee;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+
+    .completed {
+      text-decoration: line-through;
+      color: gray;
+    }
+
+    .high-priority {
+      background-color: #ffcccc;
+    }
+
+    .low-priority {
+      background-color: #ffffcc;
+    }
+
+    .priority-buttons button {
+      margin-left: 5px;
+      padding: 5px 10px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .high-btn {
+      background-color: #e74c3c;
+      color: white;
+    }
+
+    .low-btn {
+      background-color: #f1c40f;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>To-Do List</h2>
+    <div class="input-container">
+      <input type="text" id="taskInput" placeholder="Enter a task">
+      <button id="addTaskButton">+</button>
+    </div>
+    <ul id="taskList"></ul>
+  </div>
+
+  <script>
+    const addTaskButton = document.getElementById('addTaskButton');
+    const taskInput = document.getElementById('taskInput');
+    const taskList = document.getElementById('taskList');
+
+    // Add a new task
+    addTaskButton.addEventListener('click', () => {
+      const taskText = taskInput.value.trim();
+
+      if (taskText !== '') {
+        const taskItem = document.createElement('li');
+
+        // Create a checkbox
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.addEventListener('change', () => {
+          if (checkbox.checked) {
+            taskItem.classList.add('completed');
+          } else {
+            taskItem.classList.remove('completed');
+          }
+        });
+
+        // Create task text
+        const taskContent = document.createElement('span');
+        taskContent.textContent = taskText;
+
+        // Create priority buttons
+        const priorityButtons = document.createElement('div');
+        priorityButtons.classList.add('priority-buttons');
+
+        const highPriorityButton = document.createElement('button');
+        highPriorityButton.textContent = 'High';
+        highPriorityButton.classList.add('high-btn');
+        highPriorityButton.addEventListener('click', () => {
+          taskItem.classList.remove('low-priority');
+          taskItem.classList.add('high-priority');
+          taskList.insertBefore(taskItem, taskList.firstChild); // Move to the top
+        });
+
+        const lowPriorityButton = document.createElement('button');
+        lowPriorityButton.textContent = 'Low';
+        lowPriorityButton.classList.add('low-btn');
+        lowPriorityButton.addEventListener('click', () => {
+          taskItem.classList.remove('high-priority');
+          taskItem.classList.add('low-priority');
+        });
+
+        priorityButtons.appendChild(highPriorityButton);
+        priorityButtons.appendChild(lowPriorityButton);
+
+        // Add delete button
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'X';
+        deleteButton.style.backgroundColor = '#ff6666';
+        deleteButton.style.border = 'none';
+        deleteButton.style.color = 'white';
+        deleteButton.style.borderRadius = '4px';
+        deleteButton.style.cursor = 'pointer';
+        deleteButton.addEventListener('click', () => {
+          taskList.removeChild(taskItem);
+        });
+
+        // Append elements to the task item
+        taskItem.appendChild(checkbox);
+        taskItem.appendChild(taskContent);
+        taskItem.appendChild(priorityButtons);
+        taskItem.appendChild(deleteButton);
+
+        // Add task item to the list
+        taskList.appendChild(taskItem);
+
+        // Clear input
+        taskInput.value = '';
+      }
+    });
+
+    // Add task on pressing Enter
+    taskInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        addTaskButton.click();
+      }
+    });
+  </script>
+</body>
+</html>
